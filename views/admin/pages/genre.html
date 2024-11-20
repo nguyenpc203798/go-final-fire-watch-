@@ -1,0 +1,669 @@
+{{ define "genre" }}
+<style>
+  /* popup */
+  /* Animation */
+
+  @keyframes fadeIn {
+      from {
+          opacity: 0;
+      }
+      to{
+          opacity: 1;
+      }
+  }
+
+  @keyframes growth {
+      from {
+          transform: scale(var(--growth-from));
+      }
+      to{
+          transform: scale(var(--growth-to));
+      }
+  }
+.popup {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 100000; 
+  display: flex;
+  animation: fadeIn linear 0.1s;
+}
+
+.popup__overlay {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  z-index: 100000; 
+  background-color: rgba(0, 0, 0, 0.4);
+}
+
+.popup__body {
+  --growth-from: 0.7;
+  --growth-to: 1;
+  margin: auto;
+  position: relative;
+  z-index: 100000; 
+  width: 70%; /* Set width to 70% of the screen */
+  max-width: 1000px; /* Optional: Limit max width */
+  animation: growth linear 0.1s;    
+}
+.addgenreForm {
+  width: 100%; /* Ensure the form takes up full width of popup__body */
+  padding: 20px;
+}
+.updategenreForm {
+  width: 100%; /* Ensure the form takes up full width of popup__body */
+  padding: 20px;
+}
+</style>
+<div class="container-fluid py-4">
+  
+  <!-- popup layout  -->
+  <div class="popup" id="updatePopup" style="display: none;">
+    <div class="popup__overlay"></div>
+
+    <div class="popup__body">
+        <div class="update-genre-form">
+            <div class="row">
+                <div class="col-12">
+                    <div class="card1 mb-4">
+                        <div class="card1-header pb-0">
+                            <h6 style="text-align: center;">UPDATE GENRE</h6>
+                        </div>
+                        <div class="card1-body px-0 pt-0 pb-2">
+                            <div class="table-responsive" style="padding: 20px;">
+                                <form id="updategenreForm" action="/admin/update-genre/" method="POST">
+                                    <input type="hidden" id="genreId" name="id">
+                                    <div class="mb-3">
+                                        <label for="genreTitle" class="form-label">Title</label>
+                                        <input type="text" class="form-control1 form-control" id="title" name="title" onkeyup="ChangeToSlug(event)">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="genreSlug" class="form-label">Slug</label>
+                                        <input type="text" class="form-control1 form-control slug" id="slug" name="slug">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="genreDescription" class="form-label">Description</label>
+                                        <textarea class="form-control1 form-control" id="description" name="description" rows="3"></textarea>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="genreStatus" class="form-label">Status</label>
+                                        <select class="form-control1 form-control" id="status" name="status">
+                                            <option value="1">Hiện</option>
+                                            <option value="2">Ẩn</option>
+                                        </select>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" id="closePopupBtnupdate" style="margin-right: 10px;"><i class="fa fa-times"></i></button>
+                                        <button type="button" class="btn btn-secondary" onclick="submitUpdateGenre()"><i class="fa fa-edit"></i></button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+  <div class="popup" id="addPopup" style="display: none;">
+    <div class="popup__overlay"></div>
+
+    <div class="popup__body">  
+        <div class="add-genre-form" >
+          <div class="row">
+            <div class="col-12">
+              <div class="card1 mb-4">
+                <div class="card1-header pb-0">
+                  <h6 style="text-align: center;">ADD GENRE</h6>
+                </div>
+                <div class="card1-body px-0 pt-0 pb-2">
+                  <div class="table-responsive" style="padding: 20px;">
+                    <form id="addgenreForm" action="/admin/add-genre" method="POST">
+                      <div class="mb-3">
+                        <label for="genreTitle" class="form-label">Title</label>
+                        <input type="text" class="form-control1 form-control" id="title" name="title" onkeyup="ChangeToSlug(event)">
+                    </div>
+                    <div class="mb-3">
+                        <label for="genreSlug" class="form-label">Slug</label>
+                        <input type="text" class="form-control1 form-control slug" id="slug" name="slug">
+                    </div>
+                      <div class="mb-3">
+                        <label for="genreDescription" class="form-label">Description</label>
+                        <textarea class="form-control1 form-control" id="genredescription" name="description" rows="3"></textarea>
+                      </div>
+                      <div class="mb-3">
+                        <label for="genreStatus" class="form-label">Status</label>
+                        <select class="form-control1 form-control" id="genrestatus" name="status">
+                          <option value="1">Hiện</option>
+                          <option value="2">Ẩn</option>
+                        </select>
+                      </div>
+                      <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" id="closePopupBtn" style="margin-right: 10px;"><i class="fa fa-times"></i></button>
+                        <button type="submit" class="btn btn-secondary"><i class="fa fa-edit"></i></button>
+                      </div>
+                    </form>                  
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div> 
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-12">
+      <div class="card mb-4">
+        <div class="card-header pb-0">
+          <h6>Genre</h6>
+        </div>
+        <div class="card-body px-0 pt-0 pb-2">
+          <div class="table-responsive p-0">
+            <table class="table align-items-center mb-0">
+              <thead>
+                <tr>
+                  <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Title</th>
+                  <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Status</th>
+                  <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Slug</th>
+                  <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Action</th>
+                </tr>
+              </thead>
+              <tbody id="genres-list">
+                {{ range .genres }}
+                <tr>
+                  <td>
+                      <div class="d-flex px-2 py-1">
+                          <div class="d-flex flex-column justify-content-center">
+                              <h6 class="mb-0 text-sm" ondblclick="makeEditableTitle(this, 'title', '{{ .ID }}')">{{ .Title }}</h6>
+                              <p class="text-xs text-secondary mb-0" ondblclick="makeEditableDescription(this, 'description', '{{ .ID }}')">{{ .Description }}</p>
+                          </div>
+                      </div>
+                  </td>
+                  <td class="align-middle text-center" >
+                      <span class="text-secondary text-xs font-weight-bold" ondblclick="makeEditableSelect(this, 'status', '{{ .ID }}', {{ .Status }})">{{ if eq .Status 1 }}Presently{{ else }}Hidden{{ end }}</span>
+                  </td>
+                  <td class="align-middle text-center" >
+                      <span class="text-secondary text-xs font-weight-bold" ondblclick="makeEditableSlug(this, 'slug', '{{ .ID }}')">{{ .Slug }}</span>
+                  </td>
+                  <td class="align-middle text-center">
+                    <button type="button" class="btn btn-secondary" onclick="openUpdatePopup({{ . }})"><i class="fa fa-edit"></i></button>
+                    <button type="button" class="btn btn-secondary" onclick="deleteGenre('{{ .ID }}')"><i class="fa fa-trash"></i></button>
+                  </td>                  
+                </tr>
+                {{ end }}
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <button id="openPopupBtn" class="btn btn-secondary"><i class="fa fa-plus fa-2x"></i></button>
+      </div>
+    </div>
+  </div>
+  <footer class="footer pt-3  ">
+    <div class="container-fluid">
+      <div class="row align-items-center justify-content-lg-between">
+        <div class="col-lg-6 mb-lg-0 mb-4">
+          <div class="copyright text-center text-sm text-muted text-lg-start">
+            © <script>
+              document.write(new Date().getFullYear())
+            </script>,
+            made with <i class="fa fa-heart"></i> by
+            <a href="https://www.creative-tim.com" class="font-weight-bold" target="_blank">Creative Tim</a>
+            for a better web.
+          </div>
+        </div>
+        <div class="col-lg-6">
+          <ul class="nav nav-footer justify-content-center justify-content-lg-end">
+            <li class="nav-item">
+              <a href="https://www.creative-tim.com" class="nav-link text-muted" target="_blank">Creative Tim</a>
+            </li>
+            <li class="nav-item">
+              <a href="https://www.creative-tim.com/presentation" class="nav-link text-muted" target="_blank">About Us</a>
+            </li>
+            <li class="nav-item">
+              <a href="https://www.creative-tim.com/blog" class="nav-link text-muted" target="_blank">Blog</a>
+            </li>
+            <li class="nav-item">
+              <a href="https://www.creative-tim.com/license" class="nav-link pe-0 text-muted" target="_blank">License</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </footer>
+</div>
+
+<!-- Hien thi bang websocket -->
+<script>
+  // Kết nối WebSocket
+  let socket = new WebSocket("ws://localhost:8080/ws");
+
+  socket.onmessage = function(event) {
+      // Khi nhận được thông báo từ server qua WebSocket
+      let message = event.data;
+      console.log(message)
+      if (message === "A new genre was updated!") {
+          // Lấy danh sách genres và thêm genre mới vào giao diện mà không cần reload trang
+          updateGenres();
+      }
+  };
+
+  function updateGenres() {
+    fetch('/admin/genres') // Giả sử đây là API trả về danh sách genre
+        .then(response => response.json())
+        .then(data => {
+            let genresList = document.getElementById('genres-list');
+            genresList.innerHTML = ""; // Xóa danh sách cũ
+
+            // Duyệt qua từng genre và thêm vào bảng
+            data.genres.forEach(genre => {
+                let row = document.createElement('tr'); // Tạo một hàng mới
+
+                // Tạo cột đầu tiên chứa Title và Description
+                let titleDescriptionColumn = document.createElement('td');
+                titleDescriptionColumn.innerHTML = `
+                    <div class="d-flex px-2 py-1">
+                        <div class="d-flex flex-column justify-content-center">
+                            <h6 class="mb-0 text-sm" ondblclick="makeEditableTitle(this, 'title', '${genre.ID}')">${genre.Title}</h6>
+                            <p class="text-xs text-secondary mb-0" ondblclick="makeEditableDescription(this, 'description', '${genre.ID}')">${genre.Description}</p>
+                        </div>
+                    </div>
+                `;
+                row.appendChild(titleDescriptionColumn);
+
+                // Tạo cột Status
+                let statusColumn = document.createElement('td');
+                statusColumn.classList.add('align-middle', 'text-center');
+                statusColumn.innerHTML = `
+                    <span class="text-secondary text-xs font-weight-bold" ondblclick="makeEditableSelect(this, 'status', '${genre.ID}', ${genre.Status})">
+                        ${genre.Status === 1 ? 'Presently' : 'Hidden'}
+                    </span>
+                `;
+                row.appendChild(statusColumn);
+
+                // Tạo cột Slug
+                let slugColumn = document.createElement('td');
+                slugColumn.classList.add('align-middle', 'text-center');
+                slugColumn.innerHTML = `
+                    <span class="text-secondary text-xs font-weight-bold" ondblclick="makeEditableSlug(this, 'slug', '${genre.ID}')">${genre.Slug}</span>
+                `;
+                row.appendChild(slugColumn);
+
+                // Tạo cột Action (chứa các button)
+                let actionColumn = document.createElement('td');
+                actionColumn.classList.add('align-middle', 'text-center');
+                actionColumn.innerHTML = `
+                    <button type="button" class="btn btn-secondary"
+                      data-id="${genre.ID}" 
+                      data-title="${genre.Title}" 
+                      data-slug="${genre.Slug}" 
+                      data-description="${genre.Description}" 
+                      data-status="${genre.Status}"
+                      onclick="openUpdatePopup(this)">
+                      <i class="fa fa-edit"></i>
+                    </button>
+                    <button type="button" class="btn btn-secondary" onclick="deleteGenre('${genre.ID}')"><i class="fa fa-trash"></i></button>
+                `;
+                row.appendChild(actionColumn);
+
+                // Thêm hàng vào bảng
+                genresList.appendChild(row);
+            });
+        })
+        .catch(err => {
+            console.error("Failed to fetch genres:", err);
+        });
+}
+</script>
+<!-- updateField -->
+<script>
+  function makeEditableTitle(element, field, id) {
+    const currentValue = element.innerText;
+    const input = document.createElement('input');
+    input.type = 'text';
+    input.value = currentValue;
+    input.classList.add('form-control', 'form-control-sm');
+    
+    // Thêm sự kiện khi người dùng nhấn Enter để lưu dữ liệu
+    input.addEventListener('keyup', function(event) {
+        if (event.key === 'Enter' || event.keyCode === 13) {
+            if (validateTitle(input.value)) { // Validate trước khi lưu
+              saveData(input, field, id); // Gọi hàm lưu dữ liệu
+          } 
+        }
+    });
+
+    // Khi người dùng nhấp ra ngoài, cũng tự động lưu dữ liệu
+    input.addEventListener('blur', function() {
+        if (validateTitle(input.value)) { // Validate trước khi lưu
+              saveData(input, field, id); // Gọi hàm lưu dữ liệu
+          }
+    });
+
+    // Thay thế phần text bằng input
+    element.innerHTML = '';
+    element.appendChild(input);
+    input.focus(); // Đưa con trỏ chuột vào input để tiện chỉnh sửa
+  }
+  // Hàm validate cho Title
+  function validateTitle(value) {
+      if (!value || value.trim().length < 3 || value.trim().length > 100) {
+          // Hiển thị thông báo lỗi qua Toastify
+          Toastify({
+                text: "Title must be between 3 and 100 characters!",
+                duration: 3000, // Thời gian hiển thị 3 giây
+                close: true, // Cho phép đóng thông báo
+                gravity: "top", // Vị trí hiển thị ở trên
+                position: "right", // Vị trí hiển thị bên phải
+                backgroundColor: "linear-gradient(to right, #ea0606, #ff667c)", // Màu nền thông báo lỗi
+                className: "error-toast" // Lớp CSS tùy chỉnh cho thông báo lỗi
+            }).showToast();
+          return false;
+      }
+      return true;
+  }
+
+
+  function makeEditableDescription(element, field, id) {
+      const currentValue = element.innerText;
+      const input = document.createElement('textarea');
+      input.value = currentValue;
+      input.classList.add('form-control', 'form-control-sm');
+      
+      input.addEventListener('keyup', function(event) {
+          if (event.key === 'Enter' || event.keyCode === 13) {
+              if (validateDescription(input.value)) { // Validate trước khi lưu
+              saveData(input, field, id);
+          }
+          }
+      });
+
+      input.addEventListener('blur', function() {
+          if (validateDescription(input.value)) { // Validate trước khi lưu
+              saveData(input, field, id);
+          }
+      });
+
+      element.innerHTML = '';
+      element.appendChild(input);
+      input.focus();
+  }
+  // Hàm validate cho Description
+    function validateDescription(value) {
+        if (!value || value.trim().length < 3 || value.trim().length > 250) {
+            // Hiển thị thông báo lỗi qua Toastify
+          Toastify({
+                text: "Title must be between 3 and 250 characters!",
+                duration: 3000, // Thời gian hiển thị 3 giây
+                close: true, // Cho phép đóng thông báo
+                gravity: "top", // Vị trí hiển thị ở trên
+                position: "right", // Vị trí hiển thị bên phải
+                backgroundColor: "linear-gradient(to right, #ea0606, #ff667c)", // Màu nền thông báo lỗi
+                className: "error-toast" // Lớp CSS tùy chỉnh cho thông báo lỗi
+            }).showToast();
+            return false;
+        }
+        return true;
+    }
+
+  function makeEditableSlug(element, field, id) {
+      const currentValue = element.innerText;
+      const input = document.createElement('input');
+      input.type = 'text';
+      input.value = currentValue;
+      input.classList.add('form-control', 'form-control-sm');
+      
+      input.addEventListener('keyup', function(event) {
+          if (event.key === 'Enter' || event.keyCode === 13) {
+            if (validateSlug(input.value)) { // Validate trước khi lưu
+                saveData(input, field, id);
+            }
+          }
+      });
+
+      input.addEventListener('blur', function() {
+        if (validateSlug(input.value)) { // Validate trước khi lưu
+            saveData(input, field, id);
+        }
+      });
+
+      element.innerHTML = '';
+      element.appendChild(input);
+      input.focus();
+  }
+  // Hàm validate cho Slug
+  function validateSlug(value) {
+      if (!value || value.trim().length === 0) {
+          // Hiển thị thông báo lỗi qua Toastify
+          Toastify({
+                text: "Slug is required!",
+                duration: 3000, // Thời gian hiển thị 3 giây
+                close: true, // Cho phép đóng thông báo
+                gravity: "top", // Vị trí hiển thị ở trên
+                position: "right", // Vị trí hiển thị bên phải
+                backgroundColor: "linear-gradient(to right, #ea0606, #ff667c)", // Màu nền thông báo lỗi
+                className: "error-toast" // Lớp CSS tùy chỉnh cho thông báo lỗi
+            }).showToast();
+          return false;
+      }
+      return true;
+  }
+
+  function makeEditableSelect(element, field, id, currentStatus) {
+      const select = document.createElement('select');
+      select.classList.add('form-control', 'form-control-sm');
+
+      const option1 = document.createElement('option');
+      option1.value = 1;
+      option1.text = 'Presently';
+      option1.selected = currentStatus === 1;
+
+      const option2 = document.createElement('option');
+      option2.value = 2;
+      option2.text = 'Hidden';
+      option2.selected = currentStatus === 2;
+
+      select.appendChild(option1);
+      select.appendChild(option2);
+
+      // Lưu dữ liệu khi người dùng thay đổi lựa chọn
+      select.addEventListener('change', function() {
+          // Lưu ý thay đổi field thành 'status' thay vì 'Status'
+          saveData(select, field, id);
+      });
+
+      // Lưu dữ liệu khi nhấp ra ngoài
+      select.addEventListener('blur', function() {
+          saveData(select, field, id);
+      });
+
+      element.innerHTML = '';
+      element.appendChild(select);
+      select.focus();
+  }
+
+
+
+
+
+// Hàm để lưu dữ liệu sau khi chỉnh sửa
+function saveData(element, field, id) {
+    let newValue = element.value;
+    // Nếu trường cần cập nhật là 'status', chuyển đổi giá trị thành số nguyên
+    if (field === 'status') {
+          newValue = parseInt(newValue, 10); // Chuyển từ chuỗi sang số nguyên
+      }
+
+    // Dữ liệu để gửi tới server
+    const genreData = {
+        field: field,
+        value: newValue
+    };
+
+    // Kiểm tra nếu ID có cú pháp ObjectID(...) thì loại bỏ phần dư thừa
+    if (id.startsWith("ObjectID(")) {
+        id = id.replace(/ObjectID\("(.*)"\)/, "$1");  // Chỉ lấy giá trị bên trong dấu ngoặc
+      }
+
+      
+    // Thực hiện cập nhật qua $.ajax
+    $.ajax({
+        url: '/admin/update-genre-field/' + id, // URL để cập nhật
+        type: 'POST', // Phương thức POST
+        contentType: 'application/json', // Kiểu dữ liệu gửi đi là JSON
+        data: JSON.stringify(genreData), // Chuyển đổi dữ liệu thành chuỗi JSON
+        success: function(response) {
+            // Cập nhật lại giao diện
+            element.parentElement.innerHTML = newValue;
+            showSuccessToast("Genre add successfully!");
+        },
+        error: function(xhr, status, error) {
+            // Hiển thị thông báo lỗi qua Toastify
+            showErrorToast(xhr.responseJSON.message);
+        }
+    });
+}
+
+
+</script>
+<!-- delete -->
+<script>
+function deleteGenre(id) {
+  if (confirm('Bạn có chắc muốn xóa danh mục này?')) {
+    // Kiểm tra nếu ID có cú pháp ObjectID(...) thì loại bỏ phần dư thừa
+    if (id.startsWith("ObjectID(")) {
+      id = id.replace(/ObjectID\("(.*)"\)/, "$1");  // Chỉ lấy giá trị bên trong dấu ngoặc
+    }
+    $.ajax({
+      url: '/admin/delete-genre/' + id,
+      type: 'DELETE',
+      success: function(response) {
+          showSuccessToast("Genre deleted successfully!");
+      },
+      error: function(xhr, status, error) {
+          showErrorToast(xhr.responseJSON.message);
+      }
+    });
+  }
+}
+
+</script>
+<!-- update -->
+<script>
+function openUpdatePopup(param) {
+    let genre;
+
+    // Kiểm tra nếu param là một đối tượng (truyền từ Go template)
+    if (typeof param === 'object' && param.ID) {
+        genre = param;  // Trường hợp 1: Đối tượng genre
+    }
+    // Kiểm tra nếu param là một phần tử DOM (button, với data-* attributes)
+    else if (param.nodeType === 1 && param.dataset) {
+        genre = {
+            ID: param.getAttribute('data-id'),
+            Title: param.getAttribute('data-title'),
+            Slug: param.getAttribute('data-slug'),
+            Description: param.getAttribute('data-description'),
+            Status: param.getAttribute('data-status')
+        };
+    }
+
+    // Đặt các giá trị vào form
+    document.getElementById('genreId').value = genre.ID;
+    document.getElementById('title').value = genre.Title;
+    document.getElementById('slug').value = genre.Slug;
+    document.getElementById('description').value = genre.Description;
+    document.getElementById('status').value = genre.Status;
+
+    // Hiển thị popup
+    document.getElementById('updatePopup').style.display = 'flex';
+}
+function submitUpdateGenre() {
+  var id = $('#genreId').val();
+  var title = $('#title').val();
+  var slug = $('#slug').val();
+  var description = $('#description').val();
+  var status = $('#status').val();
+
+  var genreData = {
+      title: title,
+      slug: slug,
+      description: description,
+      status: parseInt(status)
+  };
+
+  $.ajax({
+      url: '/admin/update-genre/' + id,
+      type: 'POST',
+      contentType: 'application/json',
+      data: JSON.stringify(genreData),
+      success: function(response) {
+          showSuccessToast("Genre add successfully!");
+          // Ẩn popup và tải lại trang sau khi cập nhật thành công
+          $('#updatePopup').hide();
+      },
+      error: function(xhr, status, error) {
+        showErrorToast(xhr.responseJSON.message);
+      }
+  });
+}
+
+// Đóng popup khi nhấn nút "Close"
+document.getElementById('closePopupBtnupdate').addEventListener('click', function() {
+    document.getElementById('updatePopup').style.display = 'none';
+});
+</script>
+<!-- add -->
+<script>
+    document.getElementById('addgenreForm').addEventListener('submit', function(e) {
+    e.preventDefault(); // Ngăn chặn form submit thông thường
+
+    // Lấy dữ liệu từ form
+    var formData = new FormData(this);
+
+    // Gửi AJAX request tới server
+    fetch('/admin/add-genre', {
+      method: 'POST',
+      body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+      if (data.error) {
+        // Hiển thị lỗi bằng Toastify.js
+        showErrorToast(data.message);
+      } else {
+        showSuccessToast("Genre add successfully!");
+      }
+    })
+    .catch(err => {
+      showErrorToast("Something went wrong!");
+    });
+  });
+
+  //open popup
+  const popup = document.getElementById('addPopup');
+  const openPopupBtn = document.getElementById('openPopupBtn');
+  const closePopupBtn = document.getElementById('closePopupBtn');
+  const overlay = document.getElementById('popupOverlay');
+
+  // Open popup when "Add Movie" button is clicked
+  openPopupBtn.addEventListener('click', function() {
+    popup.style.display = 'flex'; // Show popup
+  });
+
+  // Close popup when "Close" button is clicked
+  closePopupBtn.addEventListener('click', function() {
+    popup.style.display = 'none'; // Hide popup
+  });
+
+  // Close popup when clicking on the overlay (outside the popup body)
+  overlay.addEventListener('click', function() {
+    popup.style.display = 'none'; // Hide popup
+  });
+</script>
+{{ end }}
+

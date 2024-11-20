@@ -1,0 +1,1043 @@
+{{ define "movie" }}
+<style>
+  /* popup */
+  /* Animation */
+
+  @keyframes fadeIn {
+      from {
+          opacity: 0;
+      }
+      to{
+          opacity: 1;
+      }
+  }
+
+  @keyframes growth {
+      from {
+          transform: scale(var(--growth-from));
+      }
+      to{
+          transform: scale(var(--growth-to));
+      }
+  }
+.popup {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 100000; 
+  display: flex;
+  animation: fadeIn linear 0.1s;
+}
+
+.popup__overlay {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  z-index: 100000; 
+  background-color: rgba(0, 0, 0, 0.4);
+}
+
+.popup__body {
+  --growth-from: 0.7;
+  --growth-to: 1;
+  margin: auto;
+  position: relative;
+  z-index: 100000; 
+  width: 70%; /* Set width to 70% of the screen */
+  max-width: 1000px; /* Optional: Limit max width */
+  animation: growth linear 0.1s;    
+}
+.addmovieForm {
+  width: 100%; /* Ensure the form takes up full width of popup__body */
+  padding: 20px;
+}
+.updatemovieForm {
+  width: 100%; /* Ensure the form takes up full width of popup__body */
+  padding: 20px;
+}
+</style>
+<div class="container-fluid py-4">
+  <!-- add quality  -->
+  <div class="popup" id="addQualityPopup" style="display: none;">
+    <div class="popup__overlay"></div>
+    <div class="popup__body">
+      <div class="add-quality-form" >
+          <div class="row">
+            <div class="col-12">
+                <div class="card1 mb-4">
+                  <div class="card1-header pb-0">
+                      <h6 style="text-align: center;">ADD QUALITY</h6>
+                  </div>
+                  <div class="card1-body px-0 pt-0 pb-2">
+                      <div class="table-responsive" style="padding: 20px;">
+                        <form id="addqualityForm" action="/admin/add-quality" method="POST">
+                            <input type="hidden" id="movieIdAddQuality" name="movieid">
+                            <input type="hidden" id="episodeIdAddQuality" name="episodeid">
+                            <input type="hidden" id="serverIdAddQuality" name="serverid">
+                            <div class="mb-3">
+                                <label for="qualityTitle" class="form-label">Title</label>
+                                <select class="form-control form-control1" id="qualitytitle" name="title">
+                                    <option value="CAM">CAM</option>
+                                    <option value="HD">HD</option>
+                                    <option value="FULL HD">FULL HD</option>
+                                    <option value="2K">2K</option>
+                                    <option value="4K">4K</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                              <label for="qualityDescription" class="form-label">Description</label>
+                              <textarea class="form-control1 form-control" id="qualitydescription" name="description" rows="3"></textarea>
+                            </div>
+                            <div class="mb-3">
+                              <label for="qualityVideourl" class="form-label">Video URL</label>
+                              <input type="text" class="form-control1 form-control slug" id="qualityVideourl" name="videourl">
+                            </div>
+                            <div class="mb-3">
+                              <label for="qualityStatus" class="form-label">Status</label>
+                              <select class="form-control1 form-control" id="qualitystatus" name="status">
+                                  <option value=1>Hiện</option>
+                                  <option value=2>Ẩn</option>
+                              </select>
+                            </div>
+                            <div class="modal-footer">
+                              <button type="submit" class="btn btn-secondary"><i class="fa fa-edit"></i></button>
+                            </div>
+                        </form>
+                      </div>
+                  </div>
+                </div>
+            </div>
+          </div>
+      </div>
+    </div>
+  </div>
+  <!-- update episode  -->
+  <div class="popup" id="updateEpisodePopup" style="display: none;">
+    <div class="popup__overlay"></div>
+    <div class="popup__body">
+      <div class="update-episode-form" >
+          <div class="row">
+            <div class="col-12">
+                <div class="card1 mb-4">
+                  <div class="card1-header pb-0">
+                      <h6 style="text-align: center;">UPDATE EPISODE</h6>
+                  </div>
+                  <div class="card1-body px-0 pt-0 pb-2">
+                      <div class="table-responsive" style="padding: 20px;">
+                        <form id="updateepisodeForm" action="/admin/update-episode" method="POST">
+                            <input type="hidden" id="movieIdUpdateEpisode" name="movieid">
+                            <input type="hidden" id="IdEpisode" name="id">
+                            <!-- Image -->
+                            <div class="mb-3">
+                              <label for="episodeImage" class="form-label">Image</label>
+                              <input type="file" class="form-control form-control1" id="image" name="image">
+                            </div>
+                            <div class="mb-3">
+                                <label for="Number" class="form-label">Number</label>
+                                <select class="form-control form-control1" id="number" name="number">
+                                    <option value=1>1</option>
+                                    <option value=2>2</option>
+                                    <option value=3>3</option>
+                                    <option value=4>4</option>
+                                    <option value=5>5</option>
+                                    <option value=6>6</option>
+                                    <option value=7>7</option>
+                                    <option value=8>8</option>
+                                    <option value=9>9</option>
+                                    <option value=10>10</option>
+                                    <option value=11>11</option>
+                                    <option value=12>12</option>
+                                    <option value=13>13</option>
+                                    <option value=14>14</option>
+                                    <option value=15>15</option>
+                                    <option value=16>16</option>
+                                    <option value=17>17</option>
+                                    <option value=18>18</option>
+                                    <option value=19>19</option>
+                                    <option value=21>21</option>
+                                    <option value=22>22</option>
+                                    <option value=23>23</option>
+                                    <option value=24>24</option>
+                                    <option value=25>25</option>
+                                    <option value=26>26</option>
+                                    <option value=27>27</option>
+                                    <option value=28>28</option>
+                                    <option value=29>29</option>
+                                    <option value=30>30</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="episodeServer" class="form-label">Server</label>
+                                <div id="server">
+                                  {{range .servers}}
+                                  <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="server{{.ID.Hex}}" name="server[]" value="{{.ID.Hex}}">
+                                    <label class="form-check-label" for="server{{.ID.Hex}}">{{.Title}}</label>
+                                  </div>
+                                  {{end}}
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                              <label for="episodeStatus" class="form-label">Status</label>
+                              <select class="form-control1 form-control" id="episodestatus" name="status">
+                                  <option value=1>Hiện</option>
+                                  <option value=2>Ẩn</option>
+                              </select>
+                            </div>
+                            <div class="modal-footer">
+                              <button type="button" class="btn btn-secondary" id="closeUpdateEpisodePopupBtn" style="margin-right: 10px;"><i class="fa fa-times"></i></button>
+                              <button type="submit" class="btn btn-secondary"><i class="fa fa-edit"></i></button>
+                            </div>
+                        </form>
+                      </div>
+                  </div>
+                </div>
+            </div>
+          </div>
+      </div>
+    </div>
+  </div>
+  <!-- add episode  -->
+  <div class="popup" id="addEpisodePopup" style="display: none;">
+    <div class="popup__overlay"></div>
+    <div class="popup__body">
+       <div class="add-episode-form" >
+          <div class="row">
+             <div class="col-12">
+                <div class="card1 mb-4">
+                   <div class="card1-header pb-0">
+                      <h6 style="text-align: center;">ADD EPISODE</h6>
+                   </div>
+                   <div class="card1-body px-0 pt-0 pb-2">
+                      <div class="table-responsive" style="padding: 20px;">
+                         <form id="addepisodeForm" action="/admin/add-episode" method="POST">
+                            <input type="hidden" id="movieIdAddEpisode" name="movieid">
+                            <!-- Image -->
+                            <div class="mb-3">
+                              <label for="episodeImage" class="form-label">Image</label>
+                              <input type="file" class="form-control form-control1" id="image" name="image">
+                            </div>
+                            <div class="mb-3">
+                                <label for="Number" class="form-label">Number</label>
+                                <select class="form-control form-control1" id="number" name="number">
+                                    <option value=1>1</option>
+                                    <option value=2>2</option>
+                                    <option value=3>3</option>
+                                    <option value=4>4</option>
+                                    <option value=5>5</option>
+                                    <option value=6>6</option>
+                                    <option value=7>7</option>
+                                    <option value=8>8</option>
+                                    <option value=9>9</option>
+                                    <option value=10>10</option>
+                                    <option value=11>11</option>
+                                    <option value=12>12</option>
+                                    <option value=13>13</option>
+                                    <option value=14>14</option>
+                                    <option value=15>15</option>
+                                    <option value=16>16</option>
+                                    <option value=17>17</option>
+                                    <option value=18>18</option>
+                                    <option value=19>19</option>
+                                    <option value=21>21</option>
+                                    <option value=22>22</option>
+                                    <option value=23>23</option>
+                                    <option value=24>24</option>
+                                    <option value=25>25</option>
+                                    <option value=26>26</option>
+                                    <option value=27>27</option>
+                                    <option value=28>28</option>
+                                    <option value=29>29</option>
+                                    <option value=30>30</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="episodeServer" class="form-label">Server</label>
+                                <div id="server">
+                                  {{range .servers}}
+                                  <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="server{{.ID.Hex}}" name="server[]" value="{{.ID.Hex}}">
+                                    <label class="form-check-label" for="server{{.ID.Hex}}">{{.Title}}</label>
+                                  </div>
+                                  {{end}}
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                               <label for="episodeStatus" class="form-label">Status</label>
+                               <select class="form-control1 form-control" id="episodestatus" name="status">
+                                  <option value=1>Hiện</option>
+                                  <option value=2>Ẩn</option>
+                               </select>
+                            </div>
+                            <div class="modal-footer">
+                               <button type="button" class="btn btn-secondary" id="closeAddEpisodePopupBtn" style="margin-right: 10px;"><i class="fa fa-times"></i></button>
+                               <button type="submit" class="btn btn-secondary"><i class="fa fa-edit"></i></button>
+                            </div>
+                         </form>
+                      </div>
+                   </div>
+                </div>
+             </div>
+          </div>
+       </div>
+    </div>
+ </div>
+  <!-- update movie  -->
+  <div class="popup" id="updatePopup" style="display: none;">
+    <div class="popup__overlay"></div>
+    <div class="popup__body">
+       <div class="update-movie-form">
+          <div class="row">
+             <div class="col-12">
+                <div class="card1 mb-4">
+                   <div class="card1-header pb-0">
+                      <h6 style="text-align: center;">UPDATE MOVIE</h6>
+                   </div>
+                   <div class="card1-body px-0 pt-0 pb-2">
+                      <div class="table-responsive" style="padding: 20px; height: 70vh;">
+                         <form id="updatemovieForm" class="movieform" action="/admin/update-movie" method="POST" enctype="multipart/form-data">
+                            <input type="hidden" id="movieId" name="id">
+                            <div class="container-fluid py-4">
+                               <div class="row">
+                                  <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
+                                     <!-- Title -->
+                                     <div class="field mb-4">
+                                        <input type="text" class="my-form-control" id="title" name="title" placeholder="Enter movie title" onkeyup="ChangeToSlug(event)">
+                                        <div class="line"></div>
+                                     </div>
+                                  </div>
+                                  <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
+                                     <!-- Slug -->
+                                     <div class="field mb-4">
+                                        <input type="text" class="my-form-control slug" id="slug" name="slug" placeholder="Enter movie slug">
+                                        <div class="line"></div>
+                                     </div>
+                                  </div>
+                                  <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
+                                     <!-- NameEng -->
+                                     <div class="field mb-4">
+                                        <input type="text" class="my-form-control" id="name_eng" name="name_eng" placeholder="Enter English movie name">
+                                        <div class="line"></div>
+                                     </div>
+                                  </div>
+                                  <div class="col-xl-3 col-sm-6">
+                                     <!-- Tags -->
+                                     <div class="field mb-4">
+                                        <input type="text" class="my-form-control" id="tags" name="tags" placeholder="Enter movie tags">
+                                        <div class="line"></div>
+                                     </div>
+                                  </div>
+                               </div>
+                               <div class="row mt-4">
+                                  <div class="col-lg-7 mb-lg-0 mb-4">
+                                     <!-- Description -->
+                                     <div class="field mb-4">
+                                        <textarea class="my-form-control" id="description" name="description" rows="3" placeholder="Enter movie description"></textarea>
+                                        <div class="line"></div>
+                                     </div>
+                                  </div>
+                                  <div class="col-lg-5">
+                                     <!-- Duration -->
+                                     <div class="field mb-4">
+                                        <input type="text" class="my-form-control" id="duration" name="duration" placeholder="Enter movie duration">
+                                        <div class="line"></div>
+                                     </div>
+                                     <!-- Trailer -->
+                                     <div class="field mb-4">
+                                        <input class="my-form-control" id="trailer" name="trailer" placeholder="Enter movie trailer"></input>
+                                        <div class="line"></div>
+                                     </div>
+                                  </div>
+                               </div>
+                               <div class="row mt-4">
+                                  <div class="col-lg-5 mb-lg-0 mb-4">
+                                     <!-- Status -->
+                                     <div class="mb-3">
+                                        <label for="status" class="form-label">Status</label>
+                                        <div class="select-wrapper">
+                                           <select class="my-form-control-select" id="status" name="status">
+                                              <option value="1">Hiện</option>
+                                              <option value="2">Ẩn</option>
+                                           </select>
+                                        </div>
+                                     </div>
+                                     <!-- Hotmovie -->
+                                     <div class="mb-3">
+                                        <label for="movieHot" class="form-label">Hotmovie</label>
+                                        <div class="select-wrapper">
+                                           <select class="my-form-control-select" id="hotmovie" name="hotmovie">
+                                              <option value="1">Hot</option>
+                                              <option value="2">Không</option>
+                                           </select>
+                                        </div>
+                                     </div>
+                                     <!-- Max Quality -->
+                                     <div class="mb-3">
+                                        <label for="movieMaxQuality" class="form-label">Max Quality</label>
+                                        <div class="select-wrapper">
+                                           <select class="my-form-control-select" id="maxquality" name="maxquality">
+                                              <option value="1">Cam</option>
+                                              <option value="720">HD</option>
+                                              <option value="1080">Full HD</option>
+                                              <option value="1440">2K</option>
+                                              <option value="2160">4K</option>
+                                           </select>
+                                        </div>
+                                     </div>
+                                     <div class="mb-3">
+                                        <label for="movieSeason" class="form-label">Season</label>
+                                        <div class="select-wrapper">
+                                           <select class="my-form-control-select" id="season" name="season">
+                                              <option value=1>1</option>
+                                              <option value=2>2</option>
+                                              <option value=3>3</option>
+                                              <option value=4>4</option>
+                                              <option value=5>5</option>
+                                              <option value=6>6</option>
+                                              <option value=7>7</option>
+                                              <option value=8>8</option>
+                                              <option value=9>9</option>
+                                              <option value=10>10</option>
+                                           </select>
+                                        </div>
+                                     </div>
+                                     <div class="mb-3">
+                                        <label for="movieNumofep" class="form-label">Numofep</label>
+                                        <div class="select-wrapper">
+                                           <select class="my-form-control-select" id="numofep" name="numofep">
+                                              <option value=1>1</option>
+                                              <option value=2>2</option>
+                                              <option value=3>3</option>
+                                              <option value=4>4</option>
+                                              <option value=5>5</option>
+                                              <option value=6>6</option>
+                                              <option value=7>7</option>
+                                              <option value=8>8</option>
+                                              <option value=9>9</option>
+                                              <option value=10>10</option>
+                                              <option value=11>11</option>
+                                              <option value=12>12</option>
+                                              <option value=13>13</option>
+                                              <option value=14>14</option>
+                                              <option value=15>15</option>
+                                              <option value=16>16</option>
+                                              <option value=17>17</option>
+                                              <option value=18>18</option>
+                                              <option value=19>19</option>
+                                              <option value=21>21</option>
+                                              <option value=22>22</option>
+                                              <option value=23>23</option>
+                                              <option value=24>24</option>
+                                              <option value=25>25</option>
+                                              <option value=26>26</option>
+                                              <option value=27>27</option>
+                                              <option value=28>28</option>
+                                              <option value=29>29</option>
+                                              <option value=30>30</option>
+                                           </select>
+                                        </div>
+                                     </div>
+                                     <div class="mb-3">
+                                        <label for="movieYear" class="form-label">Year</label>
+                                        <div class="select-wrapper">
+                                           <select class="my-form-control-select" id="year" name="year">
+                                              <option value=2000>2000</option>
+                                              <option value=2001>2001</option>
+                                              <option value=2002>2002</option>
+                                              <option value=2003>2003</option>
+                                              <option value=2004>2004</option>
+                                              <option value=2005>2005</option>
+                                              <option value=2006>2006</option>
+                                              <option value=2007>2007</option>
+                                              <option value=2008>2008</option>
+                                              <option value=2009>2009</option>
+                                              <option value=2010>2010</option>
+                                              <option value=2011>2011</option>
+                                              <option value=2012>2012</option>
+                                              <option value=2013>2013</option>
+                                              <option value=2014>2014</option>
+                                              <option value=2015>2015</option>
+                                              <option value=2016>2016</option>
+                                              <option value=2017>2017</option>
+                                              <option value=2018>2018</option>
+                                              <option value=2019>2019</option>
+                                              <option value=2020>2020</option>
+                                              <option value=2021>2021</option>
+                                              <option value=2022>2022</option>
+                                              <option value=2023>2024</option>
+                                           </select>
+                                        </div>
+                                     </div>
+                                     <!-- Country -->
+                                     <div class="mb-3">
+                                        <label for="movieCountry" class="form-label">Country</label>
+                                        <div class="select-wrapper">
+                                           <select class="my-form-control-select" id="country" name="country">
+                                              {{range .countries}}
+                                              <option value="{{.ID.Hex}}">{{.Title}}</option>
+                                              {{end}}
+                                           </select>
+                                        </div>
+                                     </div>
+                                  </div>
+                                  <div class="col-lg-7">
+                                     <div>
+                                        <!-- Category (Checkboxes) -->
+                                        <div class="mb-3">
+                                           <label for="movieCategory" class="form-label">Category</label>
+                                           <div id="category">
+                                              {{range .categories}}
+                                              <div class="form-check">
+                                                 <input class="form-check-input" type="checkbox" id="category{{.ID.Hex}}" name="category[]" value="{{.ID.Hex}}">
+                                                 <label class="form-check-label" for="category{{.ID.Hex}}">{{.Title}}</label>
+                                              </div>
+                                              {{end}}
+                                           </div>
+                                        </div>
+                                        <!-- Genre (Checkboxes) -->
+                                        <div class="mb-3">
+                                           <label for="movieGenre" class="form-label">Genre</label>
+                                           <div id="genre">
+                                              {{range .genres}}
+                                              <div class="form-check">
+                                                 <input class="form-check-input" type="checkbox" id="genre{{.ID.Hex}}" name="genre[]" value="{{.ID.Hex}}">
+                                                 <label class="form-check-label" for="genre{{.ID.Hex}}">{{.Title}}</label>
+                                              </div>
+                                              {{end}}
+                                           </div>
+                                        </div>
+                                        <!-- Sub (Checkboxes) -->
+                                        <div class="mb-3">
+                                           <label for="movieSub" class="form-label">Sub</label>
+                                           <div id="sub">
+                                              <div class="form-check">
+                                                 <input class="form-check-input" type="checkbox" id="subEnglish" name="sub[]" value="English">
+                                                 <label class="form-check-label" for="subEnglish">English</label>
+                                              </div>
+                                              <div class="form-check">
+                                                 <input class="form-check-input" type="checkbox" id="subVietnamese" name="sub[]" value="Vietnamese">
+                                                 <label class="form-check-label" for="subVietnamese">Vietnamese</label>
+                                              </div>
+                                              <!-- Tiếng Trung -->
+                                              <div class="form-check">
+                                                 <input class="form-check-input" type="checkbox" id="subChinese" name="sub[]" value="Chinese">
+                                                 <label class="form-check-label" for="subChinese">Chinese</label>
+                                              </div>
+                                              <!-- Tiếng Nhật -->
+                                              <div class="form-check">
+                                                 <input class="form-check-input" type="checkbox" id="subJapanese" name="sub[]" value="Japanese">
+                                                 <label class="form-check-label" for="subJapanese">Japanese</label>
+                                              </div>
+                                              <!-- Tiếng Hàn -->
+                                              <div class="form-check">
+                                                 <input class="form-check-input" type="checkbox" id="subKorean" name="sub[]" value="Korean">
+                                                 <label class="form-check-label" for="subKorean">Korean</label>
+                                              </div>
+                                              <!-- Tiếng Pháp -->
+                                              <div class="form-check">
+                                                 <input class="form-check-input" type="checkbox" id="subFrench" name="sub[]" value="French">
+                                                 <label class="form-check-label" for="subFrench">French</label>
+                                              </div>
+                                              <!-- Tiếng Tây Ban Nha -->
+                                              <div class="form-check">
+                                                 <input class="form-check-input" type="checkbox" id="subSpanish" name="sub[]" value="Spanish">
+                                                 <label class="form-check-label" for="subSpanish">Spanish</label>
+                                              </div>
+                                              <!-- Tiếng Đức -->
+                                              <div class="form-check">
+                                                 <input class="form-check-input" type="checkbox" id="subGerman" name="sub[]" value="German">
+                                                 <label class="form-check-label" for="subGerman">German</label>
+                                              </div>
+                                           </div>
+                                        </div>
+                                     </div>
+                                     <div>
+                                        <!-- Image -->
+                                        <div class="mb-3">
+                                           <div class="image" style="margin-bottom: 10px;">
+                                           </div>
+                                           <label for="imageaddmovieud" class="mylabel">Image
+                                           <i class="fa fa-upload"></i>
+                                           </label>
+                                           <input type="file" class="myinputfile" id="imageaddmovieud" name="image">
+                                        </div>
+                                        <!-- More Images -->
+                                        <div class="mb-3">
+                                           <div class="moreimage" style="margin-bottom: 10px;">
+                                           </div>
+                                           <label for="moreimageaddmovieud" class="mylabel">More Images
+                                           <i class="fa fa-upload"></i>
+                                           </label>
+                                           <input type="file" class="myinputfile" id="moreimageaddmovieud" name="moreimage[]" multiple>
+                                        </div>
+                                     </div>
+                                  </div>
+                               </div>
+                            </div>
+                            <!-- Submit and Cancel Buttons -->
+                            <div class="modal-footer">
+                               <button type="submit" class="btn btn-secondary"><i class="fa fa-edit"></i></button>
+                            </div>
+                         </form>
+                      </div>
+                   </div>
+                </div>
+             </div>
+          </div>
+       </div>
+    </div>
+ </div>
+  <!-- add movie  -->
+  <div class="popup" id="addPopup" style="display: none;">
+    <div class="popup__overlay"></div>
+    <div class="popup__body">  
+        <div class="add-movie-form" >
+          <div class="row">
+            <div class="col-12">
+              <div class="card1 mb-4">
+                <div class="card1-header pb-0">
+                  <h6 style="text-align: center;">ADD MOVIE</h6>
+                </div>
+                <div class="card1-body px-0 pt-0 pb-2">
+                  <div class="table-responsive" style="padding: 20px; height: 70vh;">
+                    <form id="addmovieForm" class="movieform" action="/admin/add-movie" method="POST" enctype="multipart/form-data">
+                      <div class="container-fluid py-4">
+                        <div class="row">
+                          <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
+                             <!-- Title -->
+                             <div class="field mb-4">
+                                <input type="text" class="my-form-control" id="title" name="title" placeholder="Enter movie title" onkeyup="ChangeToSlug(event)">
+                                <div class="line"></div>
+                              </div>
+                          </div>
+                          <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
+                               <!-- Slug -->
+                               <div class="field mb-4">
+                                <input type="text" class="my-form-control slug" id="slug" name="slug" placeholder="Enter movie slug">
+                                <div class="line"></div>
+                              </div>
+                          </div>
+                          <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
+                            <!-- NameEng -->
+                            <div class="field mb-4">
+                              <input type="text" class="my-form-control" id="name_eng" name="name_eng" placeholder="Enter English movie name">
+                              <div class="line"></div>
+                            </div>
+                          </div>
+                          <div class="col-xl-3 col-sm-6">
+                              <!-- Tags -->
+                              <div class="field mb-4">
+                                <input type="text" class="my-form-control" id="tags" name="tags" placeholder="Enter movie tags">
+                                <div class="line"></div>
+                              </div>
+                          </div>
+                        </div>
+                        <div class="row mt-4">
+                          <div class="col-lg-7 mb-lg-0 mb-4">
+                             <!-- Description -->
+                             <div class="field mb-4">
+                              <textarea class="my-form-control" id="description" name="description" rows="3" placeholder="Enter movie description"></textarea>
+                              <div class="line"></div>
+                            </div>
+                          </div>
+                          <div class="col-lg-5">
+                             <!-- Duration -->
+                             <div class="field mb-4">
+                              <input type="text" class="my-form-control" id="duration" name="duration" placeholder="Enter movie duration">
+                              <div class="line"></div>
+                            </div>
+                        
+                            <!-- Trailer -->
+                            <div class="field mb-4">
+                              <input class="my-form-control" id="trailer" name="trailer" placeholder="Enter movie trailer"></input>
+                              <div class="line"></div>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="row mt-4">
+                          <div class="col-lg-5 mb-lg-0 mb-4">
+                            <!-- Status -->
+                            <div class="mb-3">
+                              <label for="status" class="form-label">Status</label>
+                              <div class="select-wrapper">
+                                <select class="my-form-control-select" id="status" name="status">
+                                  <option value="1">Hiện</option>
+                                  <option value="2">Ẩn</option>
+                                </select>
+                              </div>
+                            </div>
+                          
+                            <!-- Hotmovie -->
+                            <div class="mb-3">
+                              <label for="movieHot" class="form-label">Hotmovie</label>
+                              <div class="select-wrapper">
+                                  <select class="my-form-control-select" id="hotmovie" name="hotmovie">
+                                    <option value="1">Hot</option>
+                                    <option value="2">Không</option>
+                                  </select>
+                              </div>
+                            </div>
+                          
+                            <!-- Max Quality -->
+                            <div class="mb-3">
+                              <label for="movieMaxQuality" class="form-label">Max Quality</label>
+                              <div class="select-wrapper">
+                                  <select class="my-form-control-select" id="maxquality" name="maxquality">
+                                    <option value="1">Cam</option>
+                                    <option value="720">HD</option>
+                                    <option value="1080">Full HD</option>
+                                    <option value="1440">2K</option>
+                                    <option value="2160">4K</option>
+                                  </select>
+                              </div>
+                            </div>
+                          
+                            <div class="mb-3">
+                              <label for="movieSeason" class="form-label">Season</label>
+                              <div class="select-wrapper">
+                                  <select class="my-form-control-select" id="season" name="season">   
+                                      <option value=1>1</option>
+                                      <option value=2>2</option>
+                                      <option value=3>3</option>
+                                      <option value=4>4</option>
+                                      <option value=5>5</option>
+                                      <option value=6>6</option>
+                                      <option value=7>7</option>
+                                      <option value=8>8</option>
+                                      <option value=9>9</option>
+                                      <option value=10>10</option>
+                                  </select>
+                              </div>
+                            </div>
+                        
+                            <div class="mb-3">
+                                <label for="movieNumofep" class="form-label">Numofep</label>
+                                <div class="select-wrapper">
+                                    <select class="my-form-control-select" id="numofep" name="numofep">
+                                        <option value=1>1</option>
+                                        <option value=2>2</option>
+                                        <option value=3>3</option>
+                                        <option value=4>4</option>
+                                        <option value=5>5</option>
+                                        <option value=6>6</option>
+                                        <option value=7>7</option>
+                                        <option value=8>8</option>
+                                        <option value=9>9</option>
+                                        <option value=10>10</option>
+                                        <option value=11>11</option>
+                                        <option value=12>12</option>
+                                        <option value=13>13</option>
+                                        <option value=14>14</option>
+                                        <option value=15>15</option>
+                                        <option value=16>16</option>
+                                        <option value=17>17</option>
+                                        <option value=18>18</option>
+                                        <option value=19>19</option>
+                                        <option value=21>21</option>
+                                        <option value=22>22</option>
+                                        <option value=23>23</option>
+                                        <option value=24>24</option>
+                                        <option value=25>25</option>
+                                        <option value=26>26</option>
+                                        <option value=27>27</option>
+                                        <option value=28>28</option>
+                                        <option value=29>29</option>
+                                        <option value=30>30</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                              <label for="movieYear" class="form-label">Year</label>
+                              <div class="select-wrapper">
+                                  <select class="my-form-control-select" id="year" name="year">
+                                    <option value=2000>2000</option>
+                                    <option value=2001>2001</option>
+                                    <option value=2002>2002</option>
+                                    <option value=2003>2003</option>
+                                    <option value=2004>2004</option>
+                                    <option value=2005>2005</option>
+                                    <option value=2006>2006</option>
+                                    <option value=2007>2007</option>
+                                    <option value=2008>2008</option>
+                                    <option value=2009>2009</option>
+                                    <option value=2010>2010</option>
+                                    <option value=2011>2011</option>
+                                    <option value=2012>2012</option>
+                                    <option value=2013>2013</option>
+                                    <option value=2014>2014</option>
+                                    <option value=2015>2015</option>
+                                    <option value=2016>2016</option>
+                                    <option value=2017>2017</option>
+                                    <option value=2018>2018</option>
+                                    <option value=2019>2019</option>
+                                    <option value=2020>2020</option>
+                                    <option value=2021>2021</option>
+                                    <option value=2022>2022</option>
+                                    <option value=2023>2024</option>
+                                  </select>
+                              </div>
+                            </div>
+                             <!-- Country -->
+                             <div class="mb-3">
+                                <label for="movieCountry" class="form-label">Country</label>
+                                <div class="select-wrapper">
+                                    <select class="my-form-control-select" id="country" name="country">
+                                      {{range .countries}}
+                                      <option value="{{.ID.Hex}}">{{.Title}}</option>
+                                      {{end}}
+                                    </select>
+                                </div>
+                              </div>
+                          </div>
+                          <div class="col-lg-7">
+                            <div style="height: 80%;">
+                              <!-- Category (Checkboxes) -->
+                              <div class="mb-3">
+                               <label for="movieCategory" class="form-label">Category</label>
+                               <div id="category">
+                                 {{range .categories}}
+                                 <div class="form-check">
+                                   <input class="form-check-input" type="checkbox" id="category{{.ID.Hex}}" name="category[]" value="{{.ID.Hex}}">
+                                   <label class="form-check-label" for="category{{.ID.Hex}}">{{.Title}}</label>
+                                 </div>
+                                 {{end}}
+                               </div>
+                             </div>
+                           
+                             <!-- Genre (Checkboxes) -->
+                             <div class="mb-3">
+                               <label for="movieGenre" class="form-label">Genre</label>
+                               <div id="genre">
+                                 {{range .genres}}
+                                 <div class="form-check">
+                                   <input class="form-check-input" type="checkbox" id="genre{{.ID.Hex}}" name="genre[]" value="{{.ID.Hex}}">
+                                   <label class="form-check-label" for="genre{{.ID.Hex}}">{{.Title}}</label>
+                                 </div>
+                                 {{end}}
+                               </div>
+                             </div>
+                           
+                             <!-- Sub (Checkboxes) -->
+                             <div class="mb-3">
+                               <label for="movieSub" class="form-label">Sub</label>
+                               <div id="sub">
+                                 <div class="form-check">
+                                   <input class="form-check-input" type="checkbox" id="subEnglish" name="sub[]" value="English">
+                                   <label class="form-check-label" for="subEnglish">English</label>
+                                 </div>
+                                 <div class="form-check">
+                                   <input class="form-check-input" type="checkbox" id="subVietnamese" name="sub[]" value="Vietnamese">
+                                   <label class="form-check-label" for="subVietnamese">Vietnamese</label>
+                                 </div>
+                                 <!-- Tiếng Trung -->
+                                 <div class="form-check">
+                                   <input class="form-check-input" type="checkbox" id="subChinese" name="sub[]" value="Chinese">
+                                   <label class="form-check-label" for="subChinese">Chinese</label>
+                                 </div>
+                                 <!-- Tiếng Nhật -->
+                                 <div class="form-check">
+                                   <input class="form-check-input" type="checkbox" id="subJapanese" name="sub[]" value="Japanese">
+                                   <label class="form-check-label" for="subJapanese">Japanese</label>
+                                 </div>
+                                 <!-- Tiếng Hàn -->
+                                 <div class="form-check">
+                                   <input class="form-check-input" type="checkbox" id="subKorean" name="sub[]" value="Korean">
+                                   <label class="form-check-label" for="subKorean">Korean</label>
+                                 </div>
+                                 <!-- Tiếng Pháp -->
+                                 <div class="form-check">
+                                   <input class="form-check-input" type="checkbox" id="subFrench" name="sub[]" value="French">
+                                   <label class="form-check-label" for="subFrench">French</label>
+                                 </div>
+                                 <!-- Tiếng Tây Ban Nha -->
+                                 <div class="form-check">
+                                   <input class="form-check-input" type="checkbox" id="subSpanish" name="sub[]" value="Spanish">
+                                   <label class="form-check-label" for="subSpanish">Spanish</label>
+                                 </div>
+                                 <!-- Tiếng Đức -->
+                                 <div class="form-check">
+                                   <input class="form-check-input" type="checkbox" id="subGerman" name="sub[]" value="German">
+                                   <label class="form-check-label" for="subGerman">German</label>
+                                 </div>
+                               </div>
+                             </div>
+                            </div>
+                            <div style="height: 20%;">
+                              <!-- Image -->
+                              <div class="mb-3">
+                                <label for="imageaddmovie" class="mylabel">Image
+                                  <i class="fa fa-upload"></i>
+                                </label>
+                                <input type="file" class="myinputfile" id="imageaddmovie" name="image">
+                              </div>
+                              <!-- More Images -->
+                              <div class="mb-3">
+                                <label for="moreimageaddmovie" class="mylabel">More Images
+                                  <i class="fa fa-upload"></i>
+                                </label>
+                                <input type="file" class="myinputfile" id="moreimageaddmovie" name="moreimage[]" multiple>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                  
+                      <!-- Submit and Cancel Buttons -->
+                      <div class="modal-footer">
+                        <button type="submit" class="btn btn-secondary"><i class="fa fa-edit"></i></button>
+                      </div>
+                    </form>                   
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div> 
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-12">
+      <div class="card mb-4">
+        <div class="card-header pb-0">
+          <h6>Movie</h6>
+        </div>
+        <div class="card-body px-0 pt-0 pb-2">
+          <div class="table-responsive p-0">
+            <table class="table align-items-center mb-0">
+              <thead>
+                <tr>
+                  <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Movie</th>
+                  <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">More image</th>
+                  <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Trailer</th>
+                  <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Slug</th>
+                  <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Status</th>
+                  <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Max quality</th>
+                  <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Sub</th>
+                  <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Category</th>
+                  <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Genre</th>
+                  <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Country</th>
+                  <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Year</th>
+                  <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Episode</th>
+                  <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Season</th>
+                  <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Hot movie</th>
+                  <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Duration</th>
+                  <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Views</th>
+                  <th class="sticky-col-right text-center text-uppercase text-secondary text-xxs font-weight-bolder" style="background-color: #000000;">Action</th>
+                </tr>
+              </thead>
+              <tbody id="movies-list">
+               
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <button  id="openPopupBtn" class="btn btn-secondary"><i class="fa fa-plus fa-2x"></i></button>
+      </div>
+    </div>
+  </div>
+  <div class="row my-4">
+    <div class="col-lg-8 col-md-6 mb-md-0 mb-4">
+      <div class="card">
+        <div class="card-header pb-0">
+          <div class="row">
+            <div class="col-lg-6 col-7">
+              <h6>Episode</h6>
+              <p class="text-sm mb-0">
+                <i class="fa fa-play text-info" aria-hidden="true"></i>
+                <span class="font-weight-bold ms-1">EPISODE:</span> a part of a television series or film, usually released in parts over a season
+              </p>
+            </div>
+            <div class="col-lg-6 col-5 my-auto text-end">
+              <div class="dropdown float-lg-end pe-4">
+                <a class="cursor-pointer" id="dropdownTable" data-bs-toggle="dropdown" aria-expanded="false">
+                  <i class="fa fa-ellipsis-v text-secondary"></i>
+                </a>
+                <ul class="dropdown-menu px-2 py-3 ms-sm-n4 ms-n5" aria-labelledby="dropdownTable">
+                  <li><a class="dropdown-item border-radius-md" href="javascript:;">Action</a></li>
+                  <li><a class="dropdown-item border-radius-md" href="javascript:;">Another action</a></li>
+                  <li><a class="dropdown-item border-radius-md" href="javascript:;">Something else here</a></li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="card-body px-0 pb-2">
+          <div class="table-responsive">
+            <table id="episode-table" class="table align-items-center mb-0">
+              <thead>
+                <tr>
+                  <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Episode</th>
+                  <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Server</th>
+                  <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Status</th>
+                  <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Action</th>
+                </tr>
+              </thead>
+              <tbody id="episode-table-body">
+                
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <button id="openPopupAddEpisodeBtn" class="btn btn-secondary"><i class="fa fa-plus fa-2x"></i></button>
+      </div>
+    </div>
+    <div class="col-lg-4 col-md-6">
+      <div class="card h-100">
+        <div class="card-header pb-0">
+          <h6>Quality</h6>
+          <p class="text-sm">
+            <i class="fa fa-video text-success" aria-hidden="true"></i>
+            <span class="font-weight-bold">QUALITY:</span> This is one of the most important factors in determining video quality. High resolution help videos show details more clearly. This is one of the most important factors in determining video quality.
+          </p>
+        </div>
+        <div class="card-body p-3">
+          <div id="quality-body" class="timeline timeline-one-side">
+            
+          
+          </div>
+          <button  id="openPopupAddQualityBtn" class="btn btn-secondary" style="width: 100%; margin-bottom: 0;"><i class="fa fa-plus fa-2x"  ></i></button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <footer class="footer pt-3  ">
+    <div class="container-fluid">
+      <div class="row align-items-center justify-content-lg-between">
+        <div class="col-lg-6 mb-lg-0 mb-4">
+          <div class="copyright text-center text-sm text-muted text-lg-start">
+            © <script>
+              document.write(new Date().getFullYear())
+            </script>,
+            made with <i class="fa fa-heart"></i> by
+            <a href="https://www.creative-tim.com" class="font-weight-bold" target="_blank">Creative Tim</a>
+            for a better web.
+          </div>
+        </div>
+        <div class="col-lg-6">
+          <ul class="nav nav-footer justify-content-center justify-content-lg-end">
+            <li class="nav-item">
+              <a href="https://www.creative-tim.com" class="nav-link text-muted" target="_blank">Creative Tim</a>
+            </li>
+            <li class="nav-item">
+              <a href="https://www.creative-tim.com/presentation" class="nav-link text-muted" target="_blank">About Us</a>
+            </li>
+            <li class="nav-item">
+              <a href="https://www.creative-tim.com/blog" class="nav-link text-muted" target="_blank">Blog</a>
+            </li>
+            <li class="nav-item">
+              <a href="https://www.creative-tim.com/license" class="nav-link pe-0 text-muted" target="_blank">License</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </footer>
+</div>
+
+
+<script src="/admin/assets/js/movie.js"></script>
+{{ end }}
+
