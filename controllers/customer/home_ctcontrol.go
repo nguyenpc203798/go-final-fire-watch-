@@ -91,8 +91,22 @@ func GetCategoriesWithMovies(c *gin.Context) ([]bson.M, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
+	// Lấy tham số phân trang từ query
+	pageStr := c.Query("page")
+	limit := 6 // Số lượng bản ghi trên mỗi trang
+
+	// Xử lý page
+	page, err := strconv.Atoi(pageStr)
+	if err != nil || page <= 0 {
+		page = 1 // Nếu không có hoặc không hợp lệ, mặc định là trang 1
+	}
+
+	// Tính toán `$skip`
+	skip := (page - 1) * limit
+
 	// Kiểm tra cache từ Redis
-	cachedData, err := dbs.RedisClient.Get(ctx, "categorieswithmovie").Result()
+	cacheKey := fmt.Sprintf("categorieswithmovie_%d", page)
+	cachedData, err := dbs.RedisClient.Get(ctx, cacheKey).Result()
 	if err == nil && cachedData != "" {
 		var categorieswithmovie []bson.M
 		// Giải mã cache thành danh sách danh mục với phim
@@ -126,6 +140,10 @@ func GetCategoriesWithMovies(c *gin.Context) ([]bson.M, error) {
 				}},
 			}}}},
 		}}},
+		// Giới hạn số lượng phim trong mỗi danh mục
+		bson.D{{"$addFields", bson.D{
+			{"movies", bson.D{{"$slice", bson.A{"$movies", skip, limit}}}}, // Lấy phim từ vị trí `skip` đến `limit`
+		}}},
 		// Sắp xếp danh mục theo `created_at`
 		bson.D{{"$sort", bson.D{{"created_at", -1}}}},
 	}
@@ -147,9 +165,9 @@ func GetCategoriesWithMovies(c *gin.Context) ([]bson.M, error) {
 	categoriesJSON, _ := json.Marshal(categorieswithmovie)
 
 	// Lưu vào Redis với TTL 30 phút
-	err = dbs.RedisClient.Set(ctx, "categorieswithmovie", string(categoriesJSON), 30*time.Minute).Err()
+	err = dbs.RedisClient.Set(ctx, cacheKey, string(categoriesJSON), 30*time.Minute).Err()
 	if err != nil {
-		return nil, err
+		log.Printf("Error caching categories with movies: %v", err)
 	}
 
 	// Trả về danh mục với phim

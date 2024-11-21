@@ -2,6 +2,7 @@
 package routes
 
 import (
+	middleware "fire-watch/auth"
 	controllers "fire-watch/controllers/admin"
 	"fire-watch/websocket"
 	"net/http"
@@ -11,7 +12,7 @@ import (
 
 func RegisterAdminRoutes(router *gin.Engine, websocketServer *websocket.WebSocketServer) {
 	// Nhóm các route cho admin
-	adminRoutes := router.Group("/admin")
+	adminRoutes := router.Group("/admin", middleware.AuthMiddleware())
 	{
 		adminRoutes.GET("/dashboard", func(c *gin.Context) {
 

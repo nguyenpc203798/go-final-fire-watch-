@@ -8,6 +8,7 @@ import (
 	"fire-watch/websocket"
 	"fmt"
 	"log"
+	"os"
 
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
@@ -75,7 +76,13 @@ func main() {
 	routes.RegisterAdminRoutes(router, websocketServer)
 	routes.RegisterCustomerRoutes(router, websocketServer)
 
-	// Khởi động server trên port 8080
-	fmt.Println("Server is running on port 8080")
-	router.Run(":8080") // Khởi động Gin server
+	// Lấy port từ biến môi trường (hoặc sử dụng 8080 nếu không có)
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "8080" // Giá trị mặc định
+	}
+
+	// Khởi động server trên port đã lấy
+	fmt.Printf("Server is running on port %s\n", port)
+	router.Run(":" + port) // Khởi động Gin server
 }
